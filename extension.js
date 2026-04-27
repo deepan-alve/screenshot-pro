@@ -12,6 +12,27 @@ export default class AutoCaptureScreenshotExtension extends Extension {
         const ScreenshotUIClass = ui.constructor;
         const ext = this;
 
+        // Keep track of any active GLib sources to prevent EGO-L-004
+        this._sourceIds = new Set();
+        
+        const safeIdleAdd = (priority, func) => {
+            const id = GLib.idle_add(priority, () => {
+                const result = func();
+                ext._sourceIds.delete(id);
+                return result;
+            });
+            this._sourceIds.add(id);
+        };
+
+        const safeTimeoutAdd = (priority, interval, func) => {
+            const id = GLib.timeout_add(priority, interval, () => {
+                const result = func();
+                ext._sourceIds.delete(id);
+                return result;
+            });
+            this._sourceIds.add(id);
+        };
+
         // --- PART 1: AUTO-CAPTURE ON RELEASE ---
         this._origStopDrag = AreaSelectorClass.prototype.stopDrag;
         this._isCapturing = false;
@@ -27,12 +48,12 @@ export default class AutoCaptureScreenshotExtension extends Extension {
 
             if (!ext._isCapturing && !wasClickWithoutDrag) {
                 ext._isCapturing = true;
-                GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+                safeIdleAdd(GLib.PRIORITY_DEFAULT, () => {
                     const activeUI = Main.screenshotUI;
                     if (activeUI && activeUI._captureButton && activeUI._captureButton.visible) {
                         activeUI._captureButton.emit('clicked', 0);
                     }
-                    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
+                    safeTimeoutAdd(GLib.PRIORITY_DEFAULT, 500, () => {
                         ext._isCapturing = false;
                         return GLib.SOURCE_REMOVE;
                     });
@@ -44,7 +65,6 @@ export default class AutoCaptureScreenshotExtension extends Extension {
         // --- PART 2: MAKE INITIAL BOX INVISIBLE UNTIL DRAG ---
         this._origOnMotion = AreaSelectorClass.prototype._onMotion;
         AreaSelectorClass.prototype._onMotion = function() {
-            // As soon as the user moves the mouse during a drag, show the selector
             if (this._dragButton > 0) {
                 this.opacity = 255;
             }
@@ -73,17 +93,24 @@ export default class AutoCaptureScreenshotExtension extends Extension {
 
     disable() {
         const ui = Main.screenshotUI;
-        if (!ui) return;
+        
+        // Remove all active GLib sources
+        if (this._sourceIds) {
+            this._sourceIds.forEach(id => GLib.source_remove(id));
+            this._sourceIds.clear();
+        }
 
-        const AreaSelectorClass = ui._areaSelector.constructor;
-        const UIClass = ui.constructor;
+        if (ui) {
+            const AreaSelectorClass = ui._areaSelector?.constructor;
+            const UIClass = ui.constructor;
 
-        if (this._origStopDrag) AreaSelectorClass.prototype.stopDrag = this._origStopDrag;
-        if (this._origOnMotion) AreaSelectorClass.prototype._onMotion = this._origOnMotion;
-        if (this._origOpen) UIClass.prototype.open = this._origOpen;
-        if (this._origOnAreaButtonClicked) UIClass.prototype._onAreaButtonClicked = this._origOnAreaButtonClicked;
+            if (this._origStopDrag && AreaSelectorClass) AreaSelectorClass.prototype.stopDrag = this._origStopDrag;
+            if (this._origOnMotion && AreaSelectorClass) AreaSelectorClass.prototype._onMotion = this._origOnMotion;
+            if (this._origOpen) UIClass.prototype.open = this._origOpen;
+            if (this._origOnAreaButtonClicked) UIClass.prototype._onAreaButtonClicked = this._origOnAreaButtonClicked;
 
-        if (ui._areaSelector) ui._areaSelector.opacity = 255;
+            if (ui._areaSelector) ui._areaSelector.opacity = 255;
+        }
 
         this._origStopDrag = null;
         this._origOnMotion = null;
