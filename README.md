@@ -1,18 +1,61 @@
-# Instant Area Screenshot (GNOME Shell Extension)
+# Screenshot Pro
 
-Restores the "instant" feeling to the GNOME 42+ screenshot tool.
+![GNOME Extension Version](https://img.shields.io/badge/GNOME%20Extension-1.0.0-blue) ![License](https://img.shields.io/badge/License-GPL--3.0-blue)
+
+**Screenshot Pro** provides a fast, drag‑and‑release screenshot workflow for GNOME Shell. It quietly hides the default overlay and automatically copies the captured image to the clipboard.
+
+---
 
 ## Features
-- **Auto-Capture:** Releasing the mouse after dragging a selection area instantly takes the screenshot.
-- **Fresh Start:** Every time you open the screenshot tool, it clears the previous selection so you start clean.
-- **Invisible Default:** Hides the default central rectangle that GNOME 50+ shows by default, giving you a completely clear screen until you start dragging.
+
+- **Instant capture (F key)** – Press the configured **F** shortcut, drag to select an area and release to capture instantly.
+- **OCR integration (R key)** – After a capture, press **R** to run OCR; the extracted text is copied to the clipboard.
+- **No UI flash** – The default central rectangle overlay stays hidden until you start dragging.
+- **Clipboard ready** – Captured images are automatically placed in the clipboard (compatible with Vicuna).
+- **Keyboard‑friendly** – Fully configurable via GNOME custom shortcuts or `keyd`.
+
+---
 
 ## Compatibility
-Works on GNOME 45, 46, 47, 48, 49, and 50+.
+
+Works on GNOME 45‑50+ (including 50.1).
+
+---
 
 ## Installation
-Packaged ZIP can be installed via:
+
 ```bash
-gnome-extensions install auto-capture@deepan.shell-extension.zip
+# Install the extension from the packaged ZIP
+$ gnome-extensions install screenshot-pro@deepan.alve.shell-extension.zip
+# Enable it
+$ gnome-extensions enable screenshot-pro@deepan.alve
 ```
-Or simply upload the ZIP to [extensions.gnome.org](https://extensions.gnome.org).
+
+Or upload the ZIP to the [GNOME Extensions website](https://extensions.gnome.org) for automatic updates.
+
+---
+
+## Building the ZIP
+
+If you need to rebuild the package after making changes:
+
+```bash
+cd /home/deepan/screenshot-pro
+# Pack the extension (force overwrites existing zip)
+$ gnome-extensions pack --force --podir=.
+```
+
+The resulting file will be named `screenshot-pro@deepan.alve.shell-extension.zip`.
+
+---
+
+## Screenshots
+
+*Add a screenshot of the extension in action here.*
+
+---
+
+## License
+
+GNU GPL‑3.0 – see the `LICENSE` file for details.
+](https://extensions.gnome.org).
