@@ -1,61 +1,51 @@
-# Screenshot Pro
+# Screenshot Pro
 
-![GNOME Extension Version](https://img.shields.io/badge/GNOME%20Extension-1.0.0-blue) ![License](https://img.shields.io/badge/License-GPL--3.0-blue)
+![GNOME](https://img.shields.io/badge/GNOME-45--50+-4A86CF?logo=gnome&logoColor=white)
+![License](https://img.shields.io/badge/License-GPL--3.0-blue)
 
-**Screenshot Pro** provides a fast, drag‑and‑release screenshot workflow for GNOME Shell. It quietly hides the default overlay and automatically copies the captured image to the clipboard.
-
----
+A GNOME Shell extension that restores classic drag-to-capture screenshot behavior — press a key, drag to select, release to capture. The image lands in your clipboard immediately, with optional one-key OCR.
 
 ## Features
 
-- **Instant capture (F key)** – Press the configured **F** shortcut, drag to select an area and release to capture instantly.
-- **OCR integration (R key)** – After a capture, press **R** to run OCR; the extracted text is copied to the clipboard.
-- **No UI flash** – The default central rectangle overlay stays hidden until you start dragging.
-- **Clipboard ready** – Captured images are automatically placed in the clipboard (compatible with Vicuna).
-- **Keyboard‑friendly** – Fully configurable via GNOME custom shortcuts or `keyd`.
+- **Instant capture.** Hides GNOME's central selection rectangle so the screenshot UI activates straight into drag mode.
+- **Clipboard-first.** Captured images go directly to the clipboard. No save dialog, no notification.
+- **Inline OCR.** Hold `R` while capturing and the selection is run through `tesseract`; the extracted text replaces the image on the clipboard.
+- **Suppressed notifications.** Default GNOME screenshot toasts are blocked while the extension is active.
+- **Keyboard configurable.** Triggered by GNOME's standard "Take a screenshot interactively" shortcut — bind `F` (or anything else) via Settings → Keyboard.
 
----
+## Requirements
 
-## Compatibility
+- GNOME Shell 45 – 50.1
+- `tesseract` on `$PATH` (only required for OCR mode)
 
-Works on GNOME 45‑50+ (including 50.1).
+## Install
 
----
-
-## Installation
-
-```bash
-# Install the extension from the packaged ZIP
-$ gnome-extensions install screenshot-pro@deepan.alve.shell-extension.zip
-# Enable it
-$ gnome-extensions enable screenshot-pro@deepan.alve
-```
-
-Or upload the ZIP to the [GNOME Extensions website](https://extensions.gnome.org) for automatic updates.
-
----
-
-## Building the ZIP
-
-If you need to rebuild the package after making changes:
+From the packaged ZIP:
 
 ```bash
-cd /home/deepan/screenshot-pro
-# Pack the extension (force overwrites existing zip)
-$ gnome-extensions pack --force --podir=.
+gnome-extensions install screenshot-pro@deepan.alve.shell-extension.zip
+gnome-extensions enable  screenshot-pro@deepan.alve
 ```
 
-The resulting file will be named `screenshot-pro@deepan.alve.shell-extension.zip`.
+Then bind a key in **Settings → Keyboard → Keyboard Shortcuts → Take a screenshot interactively**.
 
----
+## Usage
 
-## Screenshots
+| Key (during selection) | Action                             |
+| ---------------------- | ---------------------------------- |
+| Drag + release         | Capture to clipboard               |
+| Hold `R` + release     | Capture, OCR, copy text to clipboard |
 
-*Add a screenshot of the extension in action here.*
+## Build from source
 
----
+```bash
+git clone https://github.com/deepan-alve/screenshot-pro.git
+cd screenshot-pro
+gnome-extensions pack --force --podir=.
+```
+
+Produces `screenshot-pro@deepan.alve.shell-extension.zip` ready to install.
 
 ## License
 
-GNU GPL‑3.0 – see the `LICENSE` file for details.
-](https://extensions.gnome.org).
+[GPL-3.0](LICENSE)
