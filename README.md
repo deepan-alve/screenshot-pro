@@ -48,4 +48,4 @@ Produces `screenshot-pro@deepan.alve.shell-extension.zip` ready to install.
 
 ## License
 
-[GPL-3.0](LICENSE)
+[GPL-3.0-or-later](LICENSE) — Copyright (C) 2026 Deepan Alve
